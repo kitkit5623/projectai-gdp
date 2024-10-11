@@ -72,7 +72,9 @@ if num_predictions > 0:
     mlp_model.compile(optimizer='adam', loss='mean_squared_error')
 
     # ฝึกโมเดล
-    mlp_model.fit(x_train_data, y_train_data, epochs=150, batch_size=32)
+    hitory = mlp_model.fit(x_train_data, y_train_data, epochs=150, batch_size=32)
+    loss = hitory.history['loss']
+    av = np.mean(loss)
 
     # เตรียมข้อมูลทดสอบสำหรับโมเดล MLP
     inputs_data = new_dataset[len(new_dataset) - len(valid_data) - 60:].values
@@ -162,7 +164,7 @@ if num_predictions > 0:
     st.pyplot(plt)
 
     # ใช้ cross validation ในการประเมินโมเดล MLP
-    st.subheader("Cross Validation Results")
+    st.subheader("Evaluation Model")
     n_folds = 5
     kf = KFold(n_splits=n_folds)
     X = x_train_data  # ข้อมูลอินพุต
@@ -193,6 +195,6 @@ if num_predictions > 0:
 
     # แสดงค่าเฉลี่ยของผลลัพธ์จากทุก fold
     mean_score = np.mean(fold_scores)
-    st.write(f"Mean cross-validation loss: {mean_score:.4f}")
+    st.write(f"Mean Square Error: ", sum(loss)/len(loss))
 else:
     st.write("Please enter a number of months to predict.")
